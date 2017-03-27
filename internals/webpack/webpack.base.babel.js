@@ -1,7 +1,3 @@
-/**
- * COMMON WEBPACK CONFIGURATION
- */
-
 const path = require('path');
 const webpack = require('webpack');
 
@@ -65,13 +61,11 @@ module.exports = (options) => ({
       // make fetch available
       fetch: 'exports-loader?self.fetch!whatwg-fetch',
     }),
-
+    
     // Always expose NODE_ENV to webpack, in order to use `process.env.NODE_ENV`
     // inside your code for any environment checks; UglifyJS will automatically
     // drop any unreachable code.
     new webpack.DefinePlugin({
-      _NEWSLETTER_POST_API_: newsletterPostApi,
-      _SLIDESHOW_LOOP_:slideShowLoop,
       'process.env': {
         NODE_ENV: JSON.stringify(process.env.NODE_ENV),
       },
@@ -81,35 +75,17 @@ module.exports = (options) => ({
   resolve: {
     modules: ['app', 'node_modules'],
     extensions: [
-      '.webpack.js',
-      '.web.js',
       '.js',
       '.jsx',
       '.react.js',
     ],
     mainFields: [
       'browser',
-      'main',
       'jsnext:main',
+      'main',
     ],
   },
   devtool: options.devtool,
-  target: 'node', // Make web variables accessible to webpack, e.g. window
+  target: 'web', // Make web variables accessible to webpack, e.g. window
   performance: options.performance || {},
 });
-
-const setupAPI = function () {
-  switch(process.env.NODE_ENV) {
-    case 'production':
-      newsletterPostApi = "'https://1kdl7ucnvd.execute-api.ap-northeast-1.amazonaws.com/prod/subscribe'";
-      slideShowLoop = true;
-      break;
-    case 'development':
-    default:
-      newsletterPostApi = "'https://iddwqd14wb.execute-api.ap-northeast-1.amazonaws.com/stage/subscribe'";
-      slideShowLoop = false;
-      break;
-  }
-};
-
-setupAPI();
